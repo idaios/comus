@@ -1,0 +1,5 @@
+##to generate the manual run:
+
+pdflatex manual
+
+##this will generate the manual.pdf

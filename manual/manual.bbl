@@ -1,0 +1,17 @@
+\begin{thebibliography}{1}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Rambaut and Grassly(1997)]{Rambaut1997}
+A~Rambaut and N~C Grassly.
+\newblock {Seq-Gen: an application for the Monte Carlo simulation of DNA
+  sequence evolution along phylogenetic trees.}
+\newblock \emph{Computer applications in the biosciences : CABIOS}, 13\penalty0
+  (3):\penalty0 235--8, June 1997.
+\newblock ISSN 0266-7061.
+\newblock URL \url{http://www.ncbi.nlm.nih.gov/pubmed/9183526}.
+
+\end{thebibliography}

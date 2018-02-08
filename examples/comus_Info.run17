@@ -1,0 +1,28 @@
+
+
+==================== comus v2.0================================================
+An open source (GPLv3) software to simulate polymorphic samples from multiple species
+under the infinite/finite site model and various demographic scenarios
+
+Contacts:
+Stefanos Papadantonakis:	spapadadonakis@gmail.com
+Pavlos Pavlidis:		pavlidisp@gmail.com
+
+Please cite: comus manuscript XXXX
+
+comus is based on the following publications. Please cite them as well:
+
+	(1) Seq-Gen: an application for the Monte Carlo simulation of DNA sequence
+	evolution along phylogenetic trees, Comput Appl Biosci. 1997 Jun;13(3):235-8.
+
+	(2) Generating samples under a Wright-Fisher neutral model of genetic
+	variation, Bioinformatics. 2002 Feb;18(2):337-8.
+================================================================================
+
+Multiple Species model
+
+comus 4 10 10 10 10 1 -t 10 -msites 10000 -mm JC -birth 0.1 -eN 0.000001 1000 -oPhylo -oCoalescent -noSeparator -name run17 
+
+timeSeed:3778583794
+ET: 0.04, CT: 0.04 ... = 100.0%
+

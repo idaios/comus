@@ -1,0 +1,18 @@
+\def\betweenlines#1{%
+        \begingroup
+        \parindent0pt
+        \vbox{%
+                \hrule width\textwidth height2pt\vspace{1pt}
+                \hrule width\textwidth height0.5pt\vspace{5pt}
+                \hspace*\fill\parbox{\textwidth}{#1}%
+                \vspace{5pt}\hrule width\textwidth height0.5pt
+                \vspace{1pt}\hrule width\textwidth height2pt
+        }
+        \endgroup
+}
+
+\vspace{4cm}
+\betweenlines{\begin{flushright}\Huge\bf\Titel\end{flushright}}
+\vspace{3cm}
+\begin{flushright}{\LARGE\bf\Name}\end{flushright}
+\cleardoublepage

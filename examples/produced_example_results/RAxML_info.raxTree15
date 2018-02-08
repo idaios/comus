@@ -1,0 +1,101 @@
+
+
+IMPORTANT WARNING: Sequences seq10 and seq17 are exactly identical
+
+
+IMPORTANT WARNING: Sequences seq12 and seq13 are exactly identical
+
+
+IMPORTANT WARNING: Sequences seq14 and seq15 are exactly identical
+
+
+IMPORTANT WARNING: Sequences seq14 and seq16 are exactly identical
+
+
+IMPORTANT WARNING: Sequences seq22 and seq25 are exactly identical
+
+
+IMPORTANT WARNING: Sequences seq30 and seq35 are exactly identical
+
+
+IMPORTANT WARNING: Sequences seq31 and seq33 are exactly identical
+
+
+IMPORTANT WARNING: Sequences seq31 and seq39 are exactly identical
+
+
+IMPORTANT WARNING: Sequences seq34 and seq38 are exactly identical
+
+IMPORTANT WARNING
+Found 9 sequences that are exactly identical to other sequences in the alignment.
+Normally they should be excluded from the analysis.
+
+An alignment file with sequence duplicates removed has already
+been printed to file comus_Results.run15.reduced
+
+
+This is RAxML version 7.2.8 released by Alexandros Stamatakis in October 2010.
+
+With greatly appreciated code contributions by:
+Andre Aberer (TUM)
+Simon Berger (TUM)
+John Cazes (TACC)
+Michael Ott (TUM)
+Nick Pattengale (UNM)
+Wayne Pfeiffer (SDSC)
+Akifumi S. Tanabe (Univ. Tsukuba)
+
+
+Alignment has 6256 distinct alignment patterns
+
+Proportion of gaps and completely undetermined characters in this alignment: 0.00%
+
+RAxML rapid hill-climbing mode
+
+Using 1 distinct models/data partitions with joint branch length optimization
+
+
+Executing 1 inferences on the original alignment using 1 distinct randomized MP trees
+
+All free model parameters will be estimated by RAxML
+GAMMA model of rate heteorgeneity, ML estimate of alpha-parameter
+
+GAMMA Model parameters will be estimated up to an accuracy of 0.1000000000 Log Likelihood units
+
+Partition: 0
+Alignment Patterns: 6256
+Name: No Name Provided
+DataType: DNA
+Substitution Matrix: GTR
+
+
+
+
+RAxML was called as follows:
+
+raxmlHPC -n raxTree15 -s comus_Results.run15 -m GTRGAMMA 
+
+
+Testing which likelihood implementation to use
+Standard Implementation full tree traversal time: 0.147722
+Subtree Equality Vectors for gap columns full tree traversal time: 0.151691
+... using standard implementation
+
+Inference[0]: Time 255.881768 GAMMA-based likelihood -103608.350921, best rearrangement setting 5
+alpha[0]: 28.810989 rates[0] ac ag at cg ct gt: 0.928643 0.909188 0.954019 0.909378 0.906312 1.000000 
+
+
+Conducting final model optimizations on all 1 trees under GAMMA-based models ....
+
+Inference[0] final GAMMA-based Likelihood: -103606.589020 tree written to file /home/pavlos/research/COMUS/comus/examples/RAxML_result.raxTree15
+
+
+Starting final GAMMA-based thorough Optimization on tree 0 likelihood -103606.589020 .... 
+
+Final GAMMA-based Score of best tree -103606.569782
+
+Program execution info written to /home/pavlos/research/COMUS/comus/examples/RAxML_info.raxTree15
+Best-scoring ML tree written to: /home/pavlos/research/COMUS/comus/examples/RAxML_bestTree.raxTree15
+
+Overall execution time: 357.721482 secs or 0.099367 hours or 0.004140 days
+

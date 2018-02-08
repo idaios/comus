@@ -1,0 +1,119 @@
+\documentclass[pdftex,a4paper,12pt, oneside]{book}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage[headings]{fullpage}
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage{natbib}
+\usepackage{framed}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{listings}
+\usepackage[]{algorithm2e}
+\usepackage{program}
+
+%\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+
+%\algdef{SE}[DOWHILE]{Do}{doWhile}{\algorithmicdo}[1]{\algorithmicwhile\ #1}%
+
+\newcommand{\code}[1]{\verb|#1|}
+
+\renewcommand\lstlistingname{Code}
+
+\renewcommand\lstlistlistingname{Algorithms}
+
+\lstset{
+  stringstyle=\color{blue},
+  backgroundcolor=\color{Lavender},
+  captionpos=b
+}
+
+% \usepackage{cprotect} % to include verbatim in figure captions
+\usepackage[breaklinks]{hyperref}
+
+\newcommand{\cversion}{2.0}
+
+\newcommand{\pversion}{v.}
+
+
+\newcommand{\comus}{ {\it CoMuS} }
+
+\newcommand{\eref}[1]{(\ref{#1})}
+
+\newcommand{\Name}{Pavlos Pavlidis}
+
+\newcommand{\Titel}{
+  \comus~\cversion
+}
+
+
+\hyphenation{analy-sis}
+
+% Code for creating empty pages
+% No headers on empty pages before new chapter
+
+\makeatletter
+\def\cleardoublepage{\clearpage\if@twoside \ifodd\c@page\else
+    \hbox{}
+    \thispagestyle{empty}
+    \newpage
+    \if@twocolumn\hbox{}\newpage\fi\fi\fi}
+\makeatother \clearpage{\pagestyle{empty}\cleardoublepage}
+
+\begin{document}
+
+% \DeclareGraphicsRule{*}{pdf}{*}{}
+% \sloppy
+% \setstretch{1.15}
+% \setcounter{secnumdepth}{3}
+
+% \pagenumbering{Roman}
+% \pagestyle{empty}
+
+
+\include{title}
+
+\setcounter{page}{1}
+ 
+%\include{acknowledgments}
+
+\pagestyle{headings}
+\thispagestyle{empty}
+
+\addtocontents{toc}{\protect\thispagestyle{empty}}
+\setcounter{secnumdepth}{4}
+\tableofcontents
+\cleardoublepage
+
+\pagestyle{headings}
+
+\pagenumbering{arabic}
+
+\include{introduction}
+
+
+\include{phylo}
+
+
+\include{details}
+
+%% \include{features}
+
+%% \include{howtorun}
+
+%\include{implementation}
+%\include{introduction}
+%\include{phylogenetic_trees}
+%\include{shared_memory}
+%\include{distributed_memory}
+%\include{parallelization}
+%\include{evaluation}
+%\include{conclusion}
+
+\addcontentsline{toc}{chapter}{Bibliography}
+\bibliographystyle{plainnat}
+\bibliography{biblio}
+
+\end{document}

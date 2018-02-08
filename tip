@@ -1,0 +1,69 @@
+
+
+==================== comus v2.0================================================
+An open source (GPLv3) software to simulate polymorphic samples from multiple species
+under the infinite/finite site model and various demographic scenarios
+
+Contacts:
+Stefanos Papadantonakis:	spapadadonakis@gmail.com
+Pavlos Pavlidis:		pavlidisp@gmail.com
+
+Please cite: comus manuscript XXXX
+
+comus is based on the following publications. Please cite them as well:
+
+	(1) Seq-Gen: an application for the Monte Carlo simulation of DNA sequence
+	evolution along phylogenetic trees, Comput Appl Biosci. 1997 Jun;13(3):235-8.
+
+	(2) Generating samples under a Wright-Fisher neutral model of genetic
+	variation, Bioinformatics. 2002 Feb;18(2):337-8.
+================================================================================
+
+./comus 2 10 10 1 -t 10 
+Infinite site model -- Multiple Species model
+
+Multiple Species model
+
+Tree will be simulated....
+Tree was successful after 1 trials (due to ancestral sampling)
+./comus 2 10 10 1 -t 10 
+
+timeSeed:3145839216
+node time is: 0.000000
+node time is: 0.036905
+node time is: 0.023720
+node time is: 0.057232
+node time is: 0.102752
+node time is: 0.102752
+node time is: 0.122837
+node time is: 0.000000
+node time is: 0.000000
+node time is: 0.122837
+node time is: 0.000000
+node time is: 0.090477
+node time is: 0.122837
+node time is: 0.000000
+node time is: 0.554489
+node time is: 0.086388
+node time is: 0.086388
+node time is: 0.122837
+node time is: 0.036905
+node time is: 0.554489
+node time is: 0.036905
+node time is: 0.000000
+node time is: 0.102752
+node time is: 0.027974
+node time is: 0.006713
+node time is: 0.000000
+node time is: 0.020016
+node time is: 0.554489
+node time is: 0.122837
+node time is: 0.000000
+node time is: 0.023720
+node time is: 0.007879
+node time is: 0.122837
+node time is: 0.102752
+ET: 0.00, CT: 0.00 ... = 100.0%
+
+ET: 0.00, CT: 0.00 ... = 100.0%
+

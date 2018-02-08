@@ -1,0 +1,28 @@
+
+
+==================== comus v1.0================================================
+An open source (GPLv3) software to simulate polymorphic samples from multiple species
+under the infinite/finite site model and various demographic scenarios
+
+Contacts:
+Stefanos Papadantonakis:	spapadadonakis@gmail.com
+Pavlos Pavlidis:		pavlidisp@gmail.com
+
+Please cite: comus manuscript XXXX
+
+comus is based on the following publications. Please cite them as well:
+
+	(1) Seq-Gen: an application for the Monte Carlo simulation of DNA sequence
+	evolution along phylogenetic trees, Comput Appl Biosci. 1997 Jun;13(3):235-8.
+
+	(2) Generating samples under a Wright-Fisher neutral model of genetic
+	variation, Bioinformatics. 2002 Feb;18(2):337-8.
+================================================================================
+
+Multiple Species model
+
+comus 2 1 1 100 -iphylo tree.newick2 -t 10 -mm hky -name run20 -oPhylo -oCoalescent -partIsolation -partMaxMigration 200 -partIsoPeriod 0.8 
+
+timeSeed:1981018581
+ET: 0.04, CT: 0.00 ... = 2.0%ET: 0.02, CT: 0.00 ... = 4.0%ET: 0.02, CT: 0.00 ... = 6.0%ET: 0.02, CT: 0.00 ... = 8.0%ET: 0.02, CT: 0.00 ... = 10.0%ET: 0.02, CT: 0.00 ... = 12.0%ET: 0.02, CT: 0.00 ... = 14.0%ET: 0.02, CT: 0.00 ... = 16.0%ET: 0.02, CT: 0.00 ... = 18.0%ET: 0.02, CT: 0.00 ... = 20.0%ET: 0.02, CT: 0.00 ... = 22.0%ET: 0.02, CT: 0.00 ... = 24.0%ET: 0.02, CT: 0.00 ... = 26.0%ET: 0.02, CT: 0.00 ... = 28.0%ET: 0.02, CT: 0.00 ... = 30.0%ET: 0.02, CT: 0.01 ... = 32.0%ET: 0.02, CT: 0.01 ... = 34.0%ET: 0.02, CT: 0.01 ... = 36.0%ET: 0.02, CT: 0.01 ... = 38.0%ET: 0.02, CT: 0.01 ... = 40.0%ET: 0.02, CT: 0.01 ... = 42.0%ET: 0.02, CT: 0.01 ... = 44.0%ET: 0.02, CT: 0.01 ... = 46.0%ET: 0.02, CT: 0.01 ... = 48.0%ET: 0.02, CT: 0.01 ... = 50.0%ET: 0.02, CT: 0.01 ... = 52.0%ET: 0.02, CT: 0.01 ... = 54.0%ET: 0.02, CT: 0.01 ... = 56.0%ET: 0.02, CT: 0.01 ... = 58.0%ET: 0.02, CT: 0.01 ... = 60.0%ET: 0.02, CT: 0.01 ... = 62.0%ET: 0.02, CT: 0.01 ... = 64.0%ET: 0.02, CT: 0.01 ... = 66.0%ET: 0.02, CT: 0.01 ... = 68.0%ET: 0.02, CT: 0.01 ... = 70.0%ET: 0.02, CT: 0.01 ... = 72.0%ET: 0.02, CT: 0.01 ... = 74.0%ET: 0.02, CT: 0.02 ... = 76.0%ET: 0.02, CT: 0.02 ... = 78.0%ET: 0.02, CT: 0.02 ... = 80.0%ET: 0.02, CT: 0.02 ... = 82.0%ET: 0.02, CT: 0.02 ... = 84.0%ET: 0.02, CT: 0.02 ... = 86.0%ET: 0.02, CT: 0.02 ... = 88.0%ET: 0.02, CT: 0.02 ... = 90.0%ET: 0.02, CT: 0.02 ... = 92.0%ET: 0.02, CT: 0.02 ... = 94.0%ET: 0.02, CT: 0.02 ... = 96.0%ET: 0.02, CT: 0.02 ... = 98.0%ET: 0.02, CT: 0.02 ... = 100.0%
+
