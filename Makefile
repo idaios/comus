@@ -7,7 +7,7 @@ CFLAGS = -Wall -g -fno-builtin-cexp
 
 LIBRARIES = -lm
 
-EXECNAME = comus
+EXECNAME = comus3
 
 OBJS = comus.o comus_streec.o  comus_phylo.o rand1.o comus_evolve.o gamma.o model.o twister.o global.o nucmodels.o  aamodels.o eigen.o treefile.o
 
@@ -15,7 +15,7 @@ HFILE = comus.h comus_tree.h
 
 all: $(EXECNAME)
 
-comus : $(OBJS) $(HFILE)
+$(EXECNAME) : $(OBJS) $(HFILE)
 	$(CC) $(CFLAGS) -o $(EXECNAME) $(OBJS) $(LIBRARIES)
 
 .c.o:
