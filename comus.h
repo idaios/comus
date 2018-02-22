@@ -247,7 +247,7 @@ struct params initial_pars;
 
 void seedit( const char * ) ;
 
-void getpars( int argc, char *argv[], int *howmany )  ;
+void getpars( int argc, char *argv[], int *howmany, FILE **CoalescentFile, char CoalescentFileName[FILESIZE]  )  ;
 
 void getparsCMD_multiSpeciesSimulate(int argc, char *argv[], int *phowmany, FILE **phyloOut, char phyloFileName[FILESIZE], FILE **CoalescentFile, char CoalescentFileName[FILESIZE], double *partIsoPeriod, double *partMaxMigration, double *samplingRate, double *mu, double *lambda, double *mut, char phyloInputFileName[FILESIZE], FILE **phyloInputFile, int *phyloMode, double *torigin, double *oldestOrigin , unsigned int *timeSeed);
 

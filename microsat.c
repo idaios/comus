@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define MAXTRIES 100000
+#define MAXTRIES 200000
 
 
 int maxsites = 1000 ;
@@ -217,18 +217,7 @@ while( howmany-count++ ) {
     for( i=0; i<nsam;i++) fscanf(pfin," %s", list[i] );
   }
 
-  /* for( i = 0; i < segsites; ++i){ */
-  /*   fprintf(stderr, "%d %lf\n", i+1, times[i]); */
-  /* } */
-  /* exit(0); */
-
   sortIndexes(times, indexes, segsites);
-  /* for( i = 0; i < segsites; ++i){ */
-  /*   fprintf(stderr, "%d %lf %lf, %d\n", i+1, times[i], times[indexes[i]], indexes[i]); */
-  /* } */
-  
-  /* analyse sample ( do stuff with segsites and list) */
-
 
   while( ntries > 0){
     int repeatFlag = 0;

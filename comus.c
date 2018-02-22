@@ -1955,11 +1955,8 @@ int main(int argc, char **argv)
       
       InfoFile = fopen(InfoFileName, "w");
 
-      nfo = InfoFile;
+      nfo = InfoFile;      
       
-      
-      
-            
       sprintf(phyloFileName, "comus_Phylo.%s", name);
       
       sprintf(CoalescentFileName, "comus_Coalescent.%s", name);
@@ -1972,6 +1969,11 @@ int main(int argc, char **argv)
   if(globalVar.finiteSiteModel == 0)
     {
       fprintf(nfo, "Infinite site model -- ");
+      
+      sprintf(phyloFileName, "comus_Phylo.%s", name);
+      
+      sprintf(CoalescentFileName, "comus_Coalescent.%s", name);
+      
     }
   else
     {      
@@ -2001,6 +2003,8 @@ int main(int argc, char **argv)
 
       getparsCMD_multiSpeciesSimulate( argc, argv, &howmany, &phyloFile, phyloFileName, &CoalescentFile, CoalescentFileName,  &partIsoPeriod, &partMaxMigration, &samplingRate, &mu, &lambda, &mut, phyloInputFileName, &phyloInputFile, &treeGenerationMode, &torigin, &oldestOrigin, &timeSeed);
 
+      /* if(CoalescentFile == NULL) */
+      /* 	assert(0); */
         
       SetSeed( timeSeed );
       
@@ -2095,7 +2099,7 @@ int main(int argc, char **argv)
       
       globalVar.multipleSpecies = 0;
       
-      getpars( argc, argv, &howmany) ;   /* results are stored in global variable, pars */
+      getpars( argc, argv, &howmany, &CoalescentFile, CoalescentFileName) ;   /* results are stored in global variable, pars */
     }
 
   
@@ -2219,7 +2223,7 @@ int main(int argc, char **argv)
 	}
       }
       
-      getpars( argc, argv, &howmany) ;
+      getpars( argc, argv, &howmany, &CoalescentFile, CoalescentFileName) ;
       
     }
 
@@ -2332,14 +2336,17 @@ int main(int argc, char **argv)
 	    for(i=0;i<pars.cp.nsam; i++) { fprintf(pf,"%s\n", list[i] ); }
 	}
       }
+  
     
     if( CoalescentFile != NULL)
       {
-        if(globalVar.finiteSiteModel == 1 && globalVar.multipleSpecies == 1)
-          scale = pars.mp.theta/pars.cp.msites;
-	
+	//PP20180222 if(globalVar.finiteSiteModel == 1 && globalVar.multipleSpecies == 1)
+	scale = pars.mp.theta/pars.cp.msites;
 	printCoalescentTrees(CoalescentFile, seglst, nsegs, pars.cp.nsam, scale);
       }
+    /* else{ */
+    /*   assert(0); */
+    /* } */
    
     for(seg = 0, k = 0; k < nsegs; seg = seglst[seg].next, ++k)
       {
@@ -2687,7 +2694,7 @@ int NSEEDS = 3 ;
 
 
 void
-getpars(int argc, char *argv[], int *phowmany )
+getpars(int argc, char *argv[], int *phowmany, FILE **CoalescentFile, char CoalescentFileName[FILESIZE] )
 {
   int arg, i, j, sum , pop , argstart, npop , npop2, pop2 ;
   double migr, mij, psize, palpha ;
@@ -2741,8 +2748,22 @@ getpars(int argc, char *argv[], int *phowmany )
 
   arg = 3 ;
 
+  
+  char stringTemp[MAX_NAME_LEN];
+  
   while( arg < argc ){
+
+    stringToUpper( argv[arg], stringTemp );
     if( argv[arg][0] != '-' ) { fprintf(stderr," argument should be -%s ?\n", argv[arg]); assert(argv[arg][0] == '-'); }
+    
+    if(strcmp( stringTemp, "-OCOALESCENT") == 0)
+      {
+	
+	*CoalescentFile = fopen(CoalescentFileName, "w");
+	pars.mp.treeflag = 1;
+	continue;
+      }
+    
     
     switch ( argv[arg][1] ){
    	     
@@ -2820,7 +2841,8 @@ getpars(int argc, char *argv[], int *phowmany )
 	assert( pars.mp.mfreq >= 2);
       }
       break;
-    case 'T' : 
+    case 'T' :
+      *CoalescentFile = fopen(CoalescentFileName, "w");
       pars.mp.treeflag = 1 ;
       arg++;
       break;
@@ -4484,6 +4506,7 @@ void getparsCMD_multiSpeciesSimulate(int argc, char *argv[], int *phowmany, FILE
   for(arg = currentArg; arg < argc; ++arg)
     {
 
+      
       stringToUpper( argv[arg], stringTemp );
 
       if(strcmp( stringTemp, "-SAMPLINGTIME") == 0)
@@ -4612,6 +4635,7 @@ void getparsCMD_multiSpeciesSimulate(int argc, char *argv[], int *phowmany, FILE
 	  continue;
 	}
 
+      
       if(strcmp( stringTemp, "-OCOALESCENT") == 0)
 	{
 	  *CoalescentFile = fopen(CoalescentFileName, "w");
@@ -4635,6 +4659,15 @@ void getparsCMD_multiSpeciesSimulate(int argc, char *argv[], int *phowmany, FILE
 
       if(strcmp(argv[arg], "-T") == 0)
 	{
+	  *CoalescentFile = fopen(CoalescentFileName, "w");
+	  pars.mp.treeflag = 1;
+	  continue;
+	}
+
+      
+      if(strcmp( stringTemp, "-OCOALESCENT") == 0)
+	{
+	  *CoalescentFile = fopen(CoalescentFileName, "w");
 	  pars.mp.treeflag = 1;
 	  continue;
 	}
