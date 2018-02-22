@@ -23,6 +23,6 @@ Multiple Species model
 
 comus 3 2 3 3 1 -t 10 -mm F84 -phylomode 4 -oldestOrigin 0.01 -birth 15 -oPhylo -name run11 -noSeparator 
 
-timeSeed:4255368433
+timeSeed:1269791101
 ET: 0.00, CT: 0.00 ... = 100.0%
 

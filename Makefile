@@ -15,6 +15,9 @@ HFILE = comus.h comus_tree.h
 
 all: $(EXECNAME)
 
+microsat : microsat.o
+	$(CC) -o microsat microsat.c rand1.c -lm
+
 $(EXECNAME) : $(OBJS) $(HFILE)
 	$(CC) $(CFLAGS) -o $(EXECNAME) $(OBJS) $(LIBRARIES)
 

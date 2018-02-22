@@ -23,6 +23,6 @@ Multiple Species model
 
 comus 2 5 8 1 -t 20 -birth 1 -r 10 -rsites 100 -mm jc -msites 200 -name run4 -noseparator 
 
-timeSeed:368328285
-ET: 0.03, CT: 0.03 ... = 100.0%
+timeSeed:4141811766
+ET: 0.02, CT: 0.02 ... = 100.0%
 

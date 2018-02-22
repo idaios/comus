@@ -23,6 +23,6 @@ Multiple Species model
 
 comus 2 5 5 1 -t 1000 -mm hky -msites 10000 -name run21 -oPhylo -oCoalescent -iphylo tree.newick2 -samplingTime 1 0.5 
 
-timeSeed:907977719
+timeSeed:478292188
 ET: 0.01, CT: 0.01 ... = 100.0%
 

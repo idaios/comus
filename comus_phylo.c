@@ -7,7 +7,7 @@
 
 #define NAMESIZE 100
 
-#define TOKENSIZE 1024
+#define TOKENSIZE 10024
 
 #define NAMESIZE 100
 
@@ -22,8 +22,7 @@ char readChar(FILE *stream, int *depth)
     
     do {
         if (fread(&chr, sizeof(char), 1, stream) != 1) {
-            // indicate EOF
-            return '\0';
+	  return '\0';
         }
     } while (chr == ' ' || chr == '\n' || chr == 9 || chr == 13);
     
@@ -33,6 +32,42 @@ char readChar(FILE *stream, int *depth)
 
     return chr;
 }
+
+
+
+char readLastChar(FILE *stream, int *depth)
+{
+  char chr;
+  long int lastPos = 0;
+  do {
+    lastPos = ftell(stream);    
+    if (fread(&chr, sizeof(char), 1, stream) != 1) {
+      return '\0';
+    }
+
+    if( chr == ':' || chr == ';' ) // go back and exit
+      {
+	fseek(stream, lastPos, SEEK_SET);
+	break;
+      }
+
+    // just exit
+    if( chr == ')' || chr == '('){
+      break;
+    }
+    
+  } while (chr == ' ' || chr == '\n' || chr == 9 || chr == 13 || (chr > 64 && chr < 91) || // capital letter
+	   (chr > 96 && chr < 123) || // small letter
+	   (chr > 47 && chr < 58) || //integer
+	   chr == 95 || chr == 46  ); // period, underscore
+
+   // keep track of paren depth
+  if (chr == '(') (*depth)++;
+  if (chr == ')') (*depth)--;
+  
+  return chr;
+}
+
 
 
 char readUntil(FILE *stream, char token[TOKENSIZE], const char *stops, int *depth)
@@ -192,9 +227,7 @@ float readDist(FILE *infile)
 
 int assignChildrenToNodes(struct TREEN *nodes, int nnodes, int *positionsArray)
 {
-
   int i, k;
-
   int *index = calloc( nnodes, sizeof(int) );
 
   assert(index != NULL);
@@ -204,20 +237,14 @@ int assignChildrenToNodes(struct TREEN *nodes, int nnodes, int *positionsArray)
       if(nodes[i].father > -1)
 	{
 	  assert(nodes[i].father < nnodes);
-
 	  k = nodes[i].father;
-
 	  nodes[i].father = positionsArray[k];
-	  
+	  //	  fprintf(stderr, "i: %d, nodes[i].father: %d\n", i, nodes[i].father);
 	  nodes[ nodes[i].father ].sons[index[ nodes[i].father ] ] = i;
-	  
 	  index[ nodes[i].father ]++;
 	}
-      
     }
-
   free( index );
-  
   return 1;
 }
 
@@ -242,13 +269,15 @@ int readNewickNode(FILE *infile, int parentIndex, int *depth, int nspecies, int 
   double dist = 0.;
   
   /* read the next character and keep track of the parenthesis depth */
-  if (!(chr1  = readChar(infile, depth))) {
+  if (!(chr1  = readLastChar(infile, depth))) {
     fprintf(stderr, "unexpected end of file");
     assert(0);
   }
+  /* chr1 can be either (, or ) */
 
   assert( *depth >= 0 );
 
+  
   if(chr1 == '(')
     {
 
@@ -265,7 +294,6 @@ int readNewickNode(FILE *infile, int parentIndex, int *depth, int nspecies, int 
       nodes[currentNode].originalIndex = node;
 
       /* nodes[currentNode].nodeStr = calloc(256, sizeof(char)); */
-      
       /* strcpy(nodes[currentNode].nodeStr, "internal"); */
       
       nodes[currentNode].nodeID = -1;
@@ -284,6 +312,7 @@ int readNewickNode(FILE *infile, int parentIndex, int *depth, int nspecies, int 
 	  
 	  if(id2 < 0)
 	    {
+	      fprintf(stderr, "Warning ... comus.phylo %d\n", 1);
 	      return -1;
 	    }
 	  
@@ -296,12 +325,20 @@ int readNewickNode(FILE *infile, int parentIndex, int *depth, int nspecies, int 
 
 	  dist = readDist(infile);
 
-	  nodes[parentIndex].age = nodes[currentNode].age + dist; 
-
+	  if( nodes[parentIndex].age == 0 ||
+	      nodes[parentIndex].age < nodes[currentNode].age + dist )
+	    {
+	      nodes[parentIndex].age = nodes[currentNode].age + dist;
+	      //fprintf(stderr, "parent: %d, age: %f, child: %d, age: %f\n", parentIndex, nodes[parentIndex].age, currentNode, nodes[currentNode].age);
+	      
+	    }
+	  assert(nodes[parentIndex].age > nodes[currentNode].age);
+	  
 	  nodes[currentNode].branch = dist;
 	  	  
 	  if(!(chr = readUntil(infile, token, "):,", depth)))
 	    {
+	      fprintf(stderr, "Warning ... comus.phylo %d\n", 2);
 	      return -1;
 	    }
 	}
@@ -312,7 +349,6 @@ int readNewickNode(FILE *infile, int parentIndex, int *depth, int nspecies, int 
   
   else
     {
-
       ++(*nodesInFile);
       
       node++;
@@ -334,23 +370,37 @@ int readNewickNode(FILE *infile, int parentIndex, int *depth, int nspecies, int 
       ++nodes[parentIndex].nson;
       
       if(!(chr = readUntil(infile, token, ":),", depth)))
-	return -1;
+	{
+	  fprintf(stderr, "Warning ... comus.phylo %d\n", 3);
+	  return -1;
+	}
       
       token[0] = chr1;
       
-      nodes[currentNode].nodeID = atoi(token);
+      nodes[currentNode].nodeID = node; //atoi(token);
 
       if( chr == ':' )
 	{
 	  
 	  dist = readDist(infile);
-
-	  nodes[parentIndex].age = nodes[currentNode].age + dist; 
-
-	  nodes[currentNode].branch = dist;
-
+	  
+	  //nodes[parentIndex].age = nodes[currentNode].age + dist;
+	  
+	  if( nodes[parentIndex].age == 0 ||
+	      nodes[parentIndex].age < nodes[currentNode].age + dist )
+	    {
+	      nodes[parentIndex].age = nodes[currentNode].age + dist;
+	    }
+	  
+	  if( nodes[parentIndex].age <= nodes[currentNode].age)
+	    {
+	      fprintf(stderr, "2. parent: %d, age: %f, child: %d, age: %f\n", parentIndex, nodes[parentIndex].age, currentNode, nodes[currentNode].age);
+	      assert(nodes[parentIndex].age > nodes[currentNode].age);
+	    }
+	  
 	  if(! (chr = readUntil(infile, token, ":),", depth)))
 	    {
+	      fprintf(stderr, "%d\n", 4);
 	      return -1;
 	    }
 	  
@@ -412,7 +462,7 @@ int readTreeFromFile(FILE *infile, int nspecies, int *positionsArray)
   
   if(rootNode != 0)
     {
-      printf("Error in reading the input tree\n");
+      printf("Error in reading the input tree. Root Node is: %d, 0 is expected\n", rootNode);
       assert(rootNode == 0);
     }
 

@@ -23,6 +23,6 @@ Multiple Species model
 
 comus 4 10 10 10 10 1 -t 10 -msites 10000 -mm JC -birth 0.1 -eN 0.000001 1000 -oPhylo -oCoalescent -noSeparator -name run16 
 
-timeSeed:4167105771
+timeSeed:2432471842
 ET: 0.04, CT: 0.04 ... = 100.0%
 

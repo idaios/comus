@@ -524,7 +524,6 @@ void updateTreePops(struct TREEN *nodes)
 {
  
   int i,j, k, s, son;
-
   nodes->sumofnodespop = 0;
 
   for( i = tree.leaves; i < tree.nnode; ++i)
@@ -536,11 +535,13 @@ void updateTreePops(struct TREEN *nodes)
       for(j = 0; j < nodes[i].nson; ++j)
 	{
 	  assert( i > tree.leaves - 1);
+	  if( i <= nodes[i].sons[j]){
+	    assert( i > nodes[i].sons[j]);
+	  }
 	  nodes[i].npop += nodes[ nodes[i].sons[j] ].npop;
 	}
     }
-  
-
+    
   /* I need to update the pops because 
      it matters when the tree has been simulated
      or it has been read from the file
@@ -548,8 +549,6 @@ void updateTreePops(struct TREEN *nodes)
   j = 0;
   for( i = 0; i < tree.leaves; ++i)
     {
-      
-      /* printf("*i: %d, npop: %d\n", i, nodes[i].npop); */
       if(nodes[i].pops == NULL )
   	nodes[i].pops = calloc( nodes[i].npop, sizeof(int) );
       else
@@ -573,7 +572,6 @@ void updateTreePops(struct TREEN *nodes)
       else
 	{
 	  free(nodes[i].pops);
-	  
 	  nodes[i].pops = calloc( nodes[i].npop , sizeof(int) );
 	}
           
@@ -584,13 +582,10 @@ void updateTreePops(struct TREEN *nodes)
 	  
 	  for( k = 0; k < nodes[ son ].npop; ++k)
 	    {
-	      assert( j < nodes[i].npop);
-
-	      /* printf("pops1: %d\n", nodes[i].pops[j]); */
-
-	      /* printf("pops2*: son: %d, k: %d\n", son, k); */
-
-	      /* printf("pops2: %d, son: %d, k: %d\n", nodes[son].pops[k], son, k); */
+	      if( j >= nodes[i].npop){
+		fprintf(stderr, "j: %d, nodes[%d].npop: %d, nson: %d, nodes[%d].npop: %d\n", j, i, nodes[i].npop, nodes[i].nson, son, nodes[son].npop);
+		assert( j < nodes[i].npop);
+	      }
 	      
 	      nodes[i].pops[j] = nodes[ son ].pops[k];
 
@@ -1811,14 +1806,11 @@ void getSpeciesSamplingTime( int leaves, int totalPops, double *popsSamplingTime
 
 void setLeavesPops()
 {
-  
   int i = 0, j = 0, k = 0;
   
   for( i = 0; i < tree.leaves; ++i)
     {
-      
-      /* printf("i: %d, NPOP: %d\n", i, nodes[i].npop); */
-      
+            
       if(nodes[i].pops == NULL )
 	nodes[i].pops = calloc( nodes[i].npop, sizeof(int) );
       else
@@ -1828,8 +1820,6 @@ void setLeavesPops()
 	}
 
       assert( nodes[i].pops != NULL);
-
-      /* printf("node %d has : ", i); */
       
       for( k = 0; k < nodes[i].npop; ++k)
 	{
