@@ -2092,7 +2092,7 @@ int main(int argc, char **argv)
       if(globalVar.finiteSiteModel == 1)
 	{
 	  fprintf(nfo, "Error please specify the parameters to make make species, even if you have just a single species\n");
-	  assert( globalVar.finiteSiteModel = 0);
+	  assert( globalVar.finiteSiteModel == 0);
 	}
 
       fprintf(nfo, "Single Species model\n\n");

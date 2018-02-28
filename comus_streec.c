@@ -1083,13 +1083,8 @@ struct segl * segtre_mig_multSpecies(struct c_params *cp,
 	t = nextevent->time ;
 	
 	switch(  nextevent->detype ) {
-
-	  printf("Next event is %c\n", nextevent->detype);
-	  
 	case 'i' : /* new event, partial isolation after (forward) a speciation event */
-
 	  partialIsActive = checkPartialMigration( phyloNodes, activePopsOnNodes, totalNodes, t, duration, config);
-
 	  
 	  for( i = 0; i < internalPhyloNodes; ++i)
 	    {

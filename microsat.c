@@ -235,7 +235,7 @@ while( howmany-count++ ) {
 	if( list[ind][indexes[i]] == '1' )
 	  {
 	    nrepeats[ind] += step ;
-	    if(nrepeats[ind] < 1 ) // species should have at least a repeat
+	    if(nrepeats[ind] < 0 ) // species should not have negative repeats
 	      {
 		repeatFlag = 1;
 		break;
