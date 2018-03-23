@@ -182,36 +182,23 @@ web:   http://pop-gen.eu/wordpress/software/comus-coalescent-of-multiple-species
 /* prototypes */
 
 TNode *NewNode(TTree *tree);
-
 TTree *NewTree();
-
 static unsigned maxsites = SITESINC ;
-
 struct node{
   int abv;
   int ndes;
   float time;
 };
-
-
 static double *posit ;
-
 static double segfac ;
-
 static int count, ntbs, nseeds ;
 
 /* seq-gen related variables */
 int scaleTrees, scaleBranches, ancestorSeq, writeAncestors, writeRates, numDatasets;
-
 int *partitionLengths;
-
-double *partitionRates;
-
-double treeScale, branchScale;
-
-double *mutationTimes;
-
+double *partitionRates, treeScale, branchScale, *mutationTimes;
 FILE* mutationTimesFile;
+FILE* microsatOutputFile;
 
 /******************************/
 
@@ -574,26 +561,22 @@ void updateTreePops(struct TREEN *nodes)
 	  free(nodes[i].pops);
 	  nodes[i].pops = calloc( nodes[i].npop , sizeof(int) );
 	}
-          
+
       j = 0;
       for( s = 0; s < nodes[i].nson; ++s)
 	{
 	  son = nodes[i].sons[s];
-	  
 	  for( k = 0; k < nodes[ son ].npop; ++k)
 	    {
 	      if( j >= nodes[i].npop){
 		fprintf(stderr, "j: %d, nodes[%d].npop: %d, nson: %d, nodes[%d].npop: %d\n", j, i, nodes[i].npop, nodes[i].nson, son, nodes[son].npop);
 		assert( j < nodes[i].npop);
 	      }
-	      
 	      nodes[i].pops[j] = nodes[ son ].pops[k];
-
 	      j += 1;
 	    }
 	}
     }
-
   
   for( i = 0; i < 2 * tree.leaves - 1; ++i)
     {
@@ -1851,9 +1834,11 @@ int main(int argc, char **argv)
     ResultFileName[FILESIZE], 
     phyloFileName[FILESIZE], 
     CoalescentFileName[FILESIZE],
-    phyloInputFileName[FILESIZE];
+    phyloInputFileName[FILESIZE],
+    microsatOutputFileName[FILESIZE];
 
   name[0] = '\0';
+  microsatOutputFileName[0] = '\0';
   
   FILE *pf, 
     *fopen(), 
@@ -1946,43 +1931,30 @@ int main(int argc, char **argv)
     }
 
   if(globalVar.finiteSiteModel == 1 )
-    
     {
-
       checkRequiredArguments(name);
-      
       sprintf(InfoFileName, "comus_Info.%s", name);
-      
       InfoFile = fopen(InfoFileName, "w");
-
       nfo = InfoFile;      
-      
       sprintf(phyloFileName, "comus_Phylo.%s", name);
-      
       sprintf(CoalescentFileName, "comus_Coalescent.%s", name);
-      
       printHeader(InfoFile);
-
     }
-
     
   if(globalVar.finiteSiteModel == 0)
     {
       fprintf(nfo, "Infinite site model -- ");
-      
       sprintf(phyloFileName, "comus_Phylo.%s", name);
-      
       sprintf(CoalescentFileName, "comus_Coalescent.%s", name);
-      
     }
   else
     {      
       fprintf(stderr, "Finite site model -- ");
     }
+  sprintf(microsatOutputFileName, "comus_Microsat.%s", name);
   
+  microsatOutputFile = fopen(microsatOutputFileName, "w");
   /*********************************/
-
-  
 
   if( argc > 1 && checkAllCommandLine(argc, argv, &unsupportedArgument) == 0)
     {
@@ -2007,40 +1979,28 @@ int main(int argc, char **argv)
       /* 	assert(0); */
         
       SetSeed( timeSeed );
-      
       assert ( treeGenerationMode < 5 && treeGenerationMode > -1);
-
       assert ( mu >= 0. );
-
       assert ( lambda >= 0.);
-
       assert ( mut >= 0. );
-
       assert ( oldestOrigin == -1. || oldestOrigin > 0 );
-
       assert( howmany > 0 );
-
       /* allocate space for the pars.cp parameters 
 	 These parameters are used in the coalescent itself 
       */
       allocateParValues();
-      
       /* 
 	 set pars.cp values from initial_pars.cp 
       */
       setParsFromInitialValues();
-
       setLeavesPops();
-
       speciesSamplingTime = calloc( tree.leaves, sizeof(double) );
-
       if( globalVar.readSampling == 1)
 	{
 	  getSpeciesSamplingTime( tree.leaves, globalVar.totalPops,  pars.cp.samplingTime, speciesSamplingTime);
 
 	  /* rescale sampling times */
 	  double scale = pars.cp.msites / pars.mp.theta;
-	  
 	  for( i = 0; i < pars.cp.npop; ++i)
 	    pars.cp.samplingTime[i] *= scale;
 	}
@@ -2083,8 +2043,6 @@ int main(int argc, char **argv)
 	    }
   
 	}
-
-      
     }
   else
     {
@@ -2253,50 +2211,35 @@ int main(int argc, char **argv)
       for(k=0; k< ntbs; k++) fprintf(ResultFile, "\t%s", tbsparamstrs[k] ) ;
     }
         
-    segsites = gensam( list, &probss, &tmrca, &ttot, &seglst, ResultFile, &nsegs, InfoFile, count) ; 
+    segsites = gensam( list, &probss, &tmrca, &ttot, &seglst, ResultFile, &nsegs, InfoFile, count, microsatOutputFileName) ; 
 
     if(globalVar.finiteSiteModel == 1)
       {
-	
 	if(nsegs > maxSegs )
 	  {
-	    
 	    if(maxSegs == 0)
 	      {
-		
 		partitionLengths = malloc(sizeof(int) * nsegs);  
-		
 		partitionRates = (double *)malloc(sizeof(double) * nsegs);
-
-		
 		for (i = 0; i < nsegs; i++) {
-		  
 		  if ( (treeSet[i]=NewTree())==NULL ) {
 		    fprintf(stderr, "Out of memory\n");
 		    exit(0);
 		  }
-		  
 		}
-
 	      }
 	    else
 	      {
 		treeSet = realloc( treeSet, nsegs * sizeof(TTree*) );
-
 		partitionLengths = realloc( partitionLengths, nsegs * sizeof(int) );
 		partitionRates = realloc(partitionRates, sizeof(double) * nsegs);
-				
 		for (i = maxSegs; i < nsegs; i++) {
-		  
 		  if ( (treeSet[i]=NewTree())==NULL ) {
 		    fprintf(stderr, "Out of memory\n");
 		    exit(0);
 		  }
-		  
 		}
-
 	      }
-
 	    
 	    if (partitionLengths==NULL) {
 	      fprintf(stderr, "Out of memory\n");
@@ -2317,8 +2260,6 @@ int main(int argc, char **argv)
 	  }
 	
 	getSequencesFiniteModel( seglst, nsegs, pars.cp.nsam, ResultFile, treeSet, partitionLengths, partitionRates);
-	
-
       }
     else if(globalVar.finiteSiteModel == 0)
       {
@@ -2336,7 +2277,6 @@ int main(int argc, char **argv)
 	    for(i=0;i<pars.cp.nsam; i++) { fprintf(pf,"%s\n", list[i] ); }
 	}
       }
-  
     
     if( CoalescentFile != NULL)
       {
@@ -2352,20 +2292,14 @@ int main(int argc, char **argv)
       {
 	free(seglst[seg].ptree);
       }
-
-    
     double time1 = gettime();
-
     printIncrementer(stderr, count, howmany, time1 - time0);
-    
     printIncrementer(nfo, count, howmany, time1 - time0);
- 
   }
 
   if(mutationTimesFile != NULL)
     fclose(mutationTimesFile);
-  
-  
+    
   if( !pars.commandlineseedflag ) seedit( "end" );
   
   if(phyloInputFile != NULL)
@@ -2402,6 +2336,9 @@ int main(int argc, char **argv)
   if(InfoFile != NULL)
     fclose(InfoFile);
 
+  if(microsatOutputFile != NULL)
+    fclose(microsatOutputFile);
+
   freeList(pars.cp.deventlist);
 
   if(globalVar.finiteSiteModel == 1)
@@ -2415,9 +2352,8 @@ int main(int argc, char **argv)
     }
   
   printf("Total time: %lf\n", gettime() - time0);
-    
-  return 1;
   
+  return 0;
 }
 
 
@@ -2512,7 +2448,7 @@ int poisso(u)
 
 
 
-int  gensam( char **list, double *pprobss, double *ptmrca, double *pttot, struct segl **seglst, FILE *ResultFile, int *numberofSegments, FILE* infofile, int simindex) 
+int  gensam( char **list, double *pprobss, double *ptmrca, double *pttot, struct segl **seglst, FILE *ResultFile, int *numberofSegments, FILE* infofile, int simindex, char *microsatOutputFileName) 
 {
   int nsegs, i, k, seg, ns = 0, start, end, len, segsit ;
   
@@ -2527,6 +2463,7 @@ int  gensam( char **list, double *pprobss, double *ptmrca, double *pttot, struct
   int nsam, mfreq ;
   void prtree(FILE *fout,  struct node *ptree, int nsam, double scale);
   int make_gametes(int nsam, int mfreq,  struct node *ptree, double tt, int newsites, int ns, char **list );
+  int make_gametes_microsat_order(int nsam, struct node *ptree, double tt, FILE *outputFile );
   void ndes_setup( struct node *, int nsam );
 
   nsites = pars.cp.nsites ;
@@ -2539,15 +2476,10 @@ int  gensam( char **list, double *pprobss, double *ptmrca, double *pttot, struct
     (*seglst) = segtre_mig(&(pars.cp),  &nsegs, infofile, simindex ) ;
 
   *numberofSegments = nsegs;
-	
   nsam = pars.cp.nsam;
-
   segsitesin = pars.mp.segsitesin ;
-
   theta = pars.mp.theta ;
-
   mfreq = pars.mp.mfreq ;
-
 
   if( pars.mp.timeflag ) {
     tt = 0.0 ;
@@ -2572,8 +2504,6 @@ int  gensam( char **list, double *pprobss, double *ptmrca, double *pttot, struct
 	
   if( globalVar.finiteSiteModel == 0 && (segsitesin == 0) && ( theta > 0.0)   ) {
     ns = 0 ;
-
-
     
     for( seg=0, k=0; k<nsegs; seg= (*seglst)[seg].next, k++) { 
       if( mfreq > 1 ) ndes_setup( (*seglst)[seg].ptree, nsam );
@@ -2595,11 +2525,11 @@ int  gensam( char **list, double *pprobss, double *ptmrca, double *pttot, struct
       }
 
       make_gametes(nsam,mfreq, (*seglst)[seg].ptree,tt, segsit, ns, list );
-      
+      // for copy number variation
+      if( microsatOutputFileName[0] != 0)
+	make_gametes_microsat_order(nsam, (*seglst)[seg].ptree, tseg, microsatOutputFile);
       //free( seglst[seg].ptree) ;
-      
       locate(segsit,start*nsinv, len*nsinv,posit+ns);   
-      
       ns += segsit;
     }
     fprintf(mutationTimesFile, "\n");
@@ -5267,7 +5197,7 @@ int   make_gametes(int nsam, int mfreq, struct node *ptree, double tt, int newsi
   int  tip, j,  node ;
   int pickb(int nsam, struct node *ptree, double tt), 
     pickbmf(int nsam, int mfreq, struct node *ptree, double tt) ;
-
+  int** nodeArrayToOrderedTree(struct node* ptree, int nsam);
   
   for(  j=ns; j< ns+newsites ;  j++ ) {
     if( mfreq == 1 )
@@ -5287,6 +5217,165 @@ int   make_gametes(int nsam, int mfreq, struct node *ptree, double tt, int newsi
 
   return 0;
 }
+
+
+int** nodeArrayToOrderedTree(struct node* ptree, int nsam){
+
+  int i, parent;
+  int** orderMatrix = calloc(2*nsam -1, sizeof(int*));
+
+  for(i = 0; i < 2*nsam -1; ++i)
+    orderMatrix[i] = calloc(3, sizeof(int));
+  
+  for(i = 0; i < 2*nsam -1; ++i)
+    {
+      orderMatrix[i][0] = i;
+      orderMatrix[i][1] = orderMatrix[i][2] = -1;
+    }
+
+  for(i = 0; i < 2*nsam -2; ++i){
+    parent = (ptree + i)->abv;
+    if( orderMatrix[parent][1] == -1 )
+      orderMatrix[parent][1] = i;
+    else
+      orderMatrix[parent][2] = i;
+  }
+
+  return orderMatrix;
+}
+
+
+double ran_expo(double lambda){
+    double u;
+    u = rand() / (RAND_MAX + 1.0);
+    return -log(1- u) / lambda;
+}
+
+
+int mutateState(int state, double mutPoint){
+  double r = rndu();
+
+  if( state == 1)
+    mutPoint = 0.995;
+  
+  if( r < mutPoint )
+    return state+1;
+  
+  return state-1;
+}
+
+double mutationModelLambda2(double lambda, int state, double baseRate)
+{
+  assert(state >= 0);
+  
+  if(state == 0)
+    return 0.;
+  if(state == 1)
+    return baseRate;
+  if(state > 1 && state < 3)
+    return 1.5 * baseRate;
+  if(state >= 3 && state < 10)
+    return 2 * baseRate;
+  return 3*baseRate;
+}
+
+
+/* logistic function to describe the mutation model */
+double mutationModelLambda(double lambda, int state, double A, double K, double C, double Q, double B, double ne){
+  double newlambda;
+  if(state == 0)
+    return 0.;
+
+  assert(ne > 0);
+
+  if(ne != 1)
+    newlambda = A + (K-A)/pow((C + Q*exp(-B * lambda)),(1./ne));
+  else
+    newlambda = A + (K-A)/(C + Q*exp(-B * lambda));
+  return newlambda;
+}
+  
+
+
+void preorder(int node, int** orderArray, struct node *ptree, double start, double lambda, double baseLambda, int state, int side, int* stateVector, int *nofmutations, FILE * outputFile){
+  
+  double mutationTime = 0., branchLength = 0, newlambda = 0.;
+  int newstate = 0;
+  
+  static int calls = 0;
+  calls++;
+
+  if(node == -1 || orderArray[node][1] == -1 || orderArray[node][2] == -1)
+    {
+      if(node != -1)
+	{
+	  stateVector[node] = state;
+	}
+      return;
+    }
+
+  assert(side == -1 || side == 0 || side == 1);
+
+  branchLength = (ptree + node)->time - (ptree + orderArray[node][1])->time;
+  if( lambda > 0.)
+    mutationTime = -log(1- rndu()) / lambda;
+  else
+    mutationTime = branchLength + 1.; // something greater than branchlength
+
+  if( lambda > 0. && side != 1 && start + mutationTime < branchLength)
+    {
+      (*nofmutations)++;
+      newstate = mutateState(state, 0.5);
+      newlambda = mutationModelLambda2(baseLambda, newstate, pars.mp.theta);
+      preorder(node, orderArray, ptree, start + mutationTime, newlambda, baseLambda, newstate, -1, stateVector, nofmutations, outputFile);
+    }
+  else if(side != 1){
+    preorder(orderArray[node][1], orderArray, ptree, 0, lambda, baseLambda, state, 0, stateVector, nofmutations, outputFile);
+  }
+
+  if( lambda > 0.)
+    mutationTime = -log(1- rndu()) / lambda;
+  else
+    mutationTime = branchLength + 1.; 
+  branchLength = (ptree + node)->time - (ptree + orderArray[node][2])->time;
+  if( lambda > 0. && side != -1 && start + mutationTime < branchLength)
+    {
+      (*nofmutations)++;
+      newstate = mutateState(state, 0.5);
+      newlambda = mutationModelLambda2(baseLambda, newstate, pars.mp.theta);
+      preorder(node, orderArray, ptree, start + mutationTime, newlambda, baseLambda, newstate, 1, stateVector, nofmutations, outputFile);
+    }
+    else if(side != -1){
+      preorder(orderArray[node][2], orderArray, ptree, 0, lambda, baseLambda, state, 0, stateVector, nofmutations, outputFile);
+    }
+}
+
+#define STATE1 '1'
+#define STATE2 '0'
+
+
+int  make_gametes_microsat_order(int nsam, struct node *ptree, double theta, FILE *outputFile )
+{
+  int  i;
+  
+  int ** orderArray = nodeArrayToOrderedTree(ptree, nsam);
+  int *stateVector = calloc(nsam, sizeof(int));
+  
+  // the root
+  i = orderArray[2*nsam - 2 ][0];
+  
+  int nofmutations = 0;
+  preorder(i, orderArray, ptree, 0, theta, theta, 1, 0, stateVector, &nofmutations, outputFile);
+
+  fprintf(outputFile, "\n//\n");
+  fprintf(outputFile, "segsites: %d\n", nofmutations);
+  for(i = 0; i < nsam; ++i)
+    fprintf(outputFile, "%d ", stateVector[i]);
+  fprintf(outputFile, "\n");
+  
+  return 0;
+}
+
 
 
 /***  ttime.c : Returns the total time in the tree, *ptree, with nsam tips. **/

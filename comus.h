@@ -253,7 +253,7 @@ void getparsCMD_multiSpeciesSimulate(int argc, char *argv[], int *phowmany, FILE
 
 void addtoelist( struct devent *pt, struct devent *elist ); 
 
-int gensam( char **list, double *probss, double *ptmrca, double *pttot, struct segl **seglst, FILE *ResultFile, int *nsegs, FILE* InfoFile, int simindex) ;
+int gensam( char **list, double *probss, double *ptmrca, double *pttot, struct segl **seglst, FILE *ResultFile, int *nsegs, FILE* InfoFile, int simindex, char* microsatOutputFileName) ;
 
 void constructUpdatedCommandLine();
 
