@@ -1167,7 +1167,7 @@ int main(int argc, char** argv)
 		{
 		  getSubSetMS(pop, npop, config, msdata, subsetms, false, 0);
 
-		  fprintf(stderr, "msdata size: %lu\n", subsetms.size());
+		  // fprintf(stderr, "msdata size: %lu\n", subsetms.size());
 		  
 		  simDataPop = new SimData( mspositions, subsetms);
 		  
@@ -1344,11 +1344,18 @@ int main(int argc, char** argv)
 		    }
 		  
 		  if( msflag == false)
-		    pairFST = new FST(polytable, 2, pairsConf, NULL, false, 0);
+		    {
+		      pairFST = new FST(polytable, 2, pairsConf, NULL, false, 0);
+		      
+		  if( pairsConf[0] + pairsConf[1] != pairsData.size() ){
+		    cerr << "pairsConf[0]: " << pairsConf[0] << "\tpairsConf[1]: " << pairsConf[1] << "\tpairsData.size: " << pairsData.size() << endl;
+		    assert( pairsConf[0] + pairsConf[1] == pairsData.size());		    
+		  }
+		  
+		  
+		    }
 		  else
 		    pairFST = new FST(simDataPairs, 2, pairsConf, NULL, false, 0);
-
-		  assert( pairsConf[0] + pairsConf[1] == pairsData.size());
 
 		  cout << pairFST ->HBK() << "\t";
 
